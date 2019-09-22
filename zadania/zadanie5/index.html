@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .form {
+        margin-top: 2em;
+      }
+      .alert {
+        position: absolute;
+        top: 0;
+        left: 50vw;
+        height: 2em;
+        width: 5em;
+        text-align: center;
+        /* visibility: hidden; */
+      }
+    </style>
+  </head>
+  <body>
+    <form action="#" class="form">
+      <div>
+        <label for="email"> Podaj swój mail: </label>
+        <input type="email" name="email" id="email" required />
+        <span class="emailError"></span>
+      </div>
+      <div>
+        <label for="password" placeholder="podaj hasło">
+          Podaj swoję hasło:
+        </label>
+        <input type="password" name="password" id="password" required />
+        <span class="passError"></span>
+      </div>
+
+      <button type="submit">Wyślij</button>
+    </form>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+
+        const emails = [];
+        const poorPasswords = {
+          password: "już 'hasło' by było bezpieczniejsze",
+          qwerty: "Bo przecież nikt z nas nie ma klawiatury...",
+          123: "słabe hasło masz ty!",
+          admin: "to nie logowanie do routera",
+          football:
+            "Według randomowej strony którą znalazłem w internecie piłka nożna ma 4 miliardy fanów na świecie. Na pewno nikt nie wpadł żeby uzyć takiego hasła 🤔"
+        };
+
+        function showAlert(text, where) {
+          document.querySelector(`.${where}`).textContent = text;
+        }
+
+        function resetInputs() {
+          document.getElementById("email").value = "";
+          document.getElementById("password").value = "";
+        }
+
+        function isWeak(pass) {
+          if (Object.keys(poorPasswords).includes(pass)) {
+            showAlert(poorPasswords[pass], "passError");
+            return true;
+          }
+        }
+
+        function doesExist(email) {
+          if (emails.includes(email)) {
+            showAlert(
+              "Email o podanej nazwie istnieje, proszę wpisać inny",
+              "emailError"
+            );
+            resetInputs();
+            return true;
+          }
+        }
+
+        const registerMe = e => {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          if (!isWeak(password)) {
+            const checkMail = doesExist(email);
+            if (!checkMail) {
+              emails.push(email);
+              console.log(email, password);
+            }
+          }
+
+          resetInputs();
+          console.log(emails);
+        };
+
+        form.addEventListener("submit", registerMe);
+      });
+    </script>
+  </body>
+</html>
